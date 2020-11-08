@@ -7,9 +7,9 @@ public class PlayerLasers {
 
     public PlayerLasers(double x, double y) {
         this.x = x;
-        this.y = y;
+        this.y = y+LASER_LENGTH;
         StdDraw.setPenColor(Color.green);
-        StdDraw.rectangle(x, y + LASER_LENGTH, 0.001, LASER_LENGTH);
+        StdDraw.rectangle(x, y, 0.001, LASER_LENGTH);
         StdDraw.setPenColor(Color.black);
     }
 

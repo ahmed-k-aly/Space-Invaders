@@ -59,7 +59,7 @@ public class Invader {
     public boolean isHit(double otherX, double otherY) {
         // returns true if passed coordinates are within the objects hitbox
         boolean checkX = getX1() < otherX && getX2() > otherX;
-        boolean checkY = getY2()< otherY && getY1() > otherY;
+        boolean checkY = getY2() <= otherY && getY1() >= otherY;
         return  checkX && checkY;
     }
 
@@ -75,9 +75,11 @@ public class Invader {
     public boolean hitLeftWall(){
         return getCoordinates()[0] <= 0;
     }
+
     public boolean hitRightWall(){
         return getCoordinates()[1] >= 1;
     }
+
     public boolean hitTopWall(){
         return getCoordinates()[2] >= 1;
     }
