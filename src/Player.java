@@ -5,17 +5,12 @@ public class Player {
     private final double SIZE = 0.032;
     private double x = 0;
     private final double y = 0.04;
-    private final Color color; // Invader Color
     private final int healthMax = 100;
     private int health = healthMax;
 
-    public Player(Color color) {
-        this.color = color;
-        StdDraw.setPenColor(color);
-        StdDraw.filledSquare(x, y, SIZE);
+    public Player() {
         StdDraw.picture(x, y, "icons/space-invaders.png");
         createHealthBar();
-        StdDraw.setPenColor(StdDraw.BLACK);
     }
 
     public boolean isHit(double x, double y) {

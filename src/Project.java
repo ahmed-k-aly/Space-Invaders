@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Project {
-    private static final Player PLAYER = new Player(StdDraw.BOOK_BLUE);
+    private static final Player PLAYER = new Player();
     private static final Level levelData = new Level(); // Creates the Data for the level
 
     public static void println(String str) {
@@ -360,7 +360,6 @@ public class Project {
         }
     }
 
-
     private static Boss[] remove(Boss[] arr, int index) {
         if (index < 0 || index >= arr.length) {
             return arr;
@@ -396,22 +395,82 @@ public class Project {
         initBossesArray();
     }
 
+    public static void displayLevel(){
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.text(0.07, 0.02, "Level: " + levelData.getLevel());
+    }
+
+    public static void displayScore(){
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.text(0.6, 0.02, "Score: " + levelData.getScore());
+    }
+
+    public static void gameOver(){
+        StdDraw.disableDoubleBuffering();
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.filledSquare(0.5,0.5,0.5);
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.text(0.5,0.5,"GAME OVER");
+        StdDraw.text(0.5,0.4,"Press Enter to play again ");
+        StdDraw.text(0.5,0.3,"Press ESC to exit");
+    }
+
+    public static void prompt(int hs){
+        boolean keepGoing = true;
+        while (keepGoing){
+            if (StdDraw.isKeyPressed(10)) { // press enter
+                println("Zebyy");
+                PLAYER.setHealth(100);
+                keepGoing = false;
+                game(hs);
+            }
+            else if (StdDraw.isKeyPressed(27)) System.exit(0); // esc pressed
+        }
+    }
+
     public static void main(String[] args) {
         int difficultyIndex = Integer.parseInt(args[0]);
         checkArgs(difficultyIndex);
-        levelData.setLevel(1);
+        game(0);
+    }
+
+    public static void mainMenu(){
+        /* TODO: Create a main menu before the game
+               Make a settings button where you can change sensitivity and buttons
+               Toggle cheats
+               Change player appearance
+               Change Laser Color
+               Make WW2 Mode?
+               */
+    }
+
+
+    public static void startMenu(){
+        /* TODO: Create the main menu with buttons
+                 Allow to exit game
+                 Allow to toggle cheats
+                 Allow to restart game
+        */
+    }
+
+    public static void game(int highScore){
+        levelData.setLevel(15);
         initLevel();
         StdDraw.enableDoubleBuffering();
         PlayerLasers[] playerLasers = new PlayerLasers[0];
         InvaderLasers[] invaderLasers = new InvaderLasers[0];
         BossLasers[] bossLasers = new BossLasers[0];
+        int timePerFrame = 10;
         Time stopwatch = new Time();
         stopwatch.startStopwatch();
-        boolean flag = true;
         while (true) {
+            if (StdDraw.isKeyPressed(27)){
+                startMenu();
+            }
+
             PLAYER.moveTo(StdDraw.mouseX()); // Moves the player's paddle to x-coordinate of the mouse
-            PlayerLasers[] newPlayerLasers = new PlayerLasers[0];
             moveInvaders();
+            PlayerLasers[] newPlayerLasers = new PlayerLasers[0]; // inits player lasers arr
             if (StdDraw.isKeyPressed(32) || StdDraw.isMousePressed())// Shoot if Spacebar pressed or Mouse pressed. Also cooldowns
             {
                 newPlayerLasers = playerShoots(stopwatch);
@@ -422,21 +481,31 @@ public class Project {
                 BossLasers[] bossLasers1 = bossShoot();
                 bossLasers = bossLasersArrayMerger(bossLasers, bossLasers1);
                 moveBossLasers(bossLasers);
-            }
+            } // inits boss level
             InvaderLasers[] newInvaderLasers = invaderShoot();
             playerLasers = playerLasersArrayMerger(playerLasers, newPlayerLasers);
             invaderLasers = invaderLasersArrayMerger(invaderLasers, newInvaderLasers);
             moveInvaderLasers(invaderLasers);
             checkInvadersLasersHit(invaderLasers);
-            playerLasers = checkPlayerLasersHit(playerLasers);
             movePlayerLasers(playerLasers);
-            levelCompletedCheck();
+            playerLasers = checkPlayerLasersHit(playerLasers);
             removeBoss();
-            updateScreen(10, flag);
+            displayLevel();
+            displayScore();
+            if (PLAYER.isDead()){
+                break;
+            }
+            levelCompletedCheck();
+            updateScreen(timePerFrame);
         }
+        gameOver();
+        prompt(highScore);
+
     }
 
-    private static void updateScreen(int t, boolean flag) {
+
+
+    private static void updateScreen(int t) {
         // Updates the screen each t milliseconds
         StdDraw.show();
         StdDraw.pause(t);
