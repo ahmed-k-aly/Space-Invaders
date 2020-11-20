@@ -5,19 +5,24 @@ public class PlayerLasers {
     private double y;
     private final double LASER_LENGTH = 0.01;
     private double laserSpeed = 0.02;
-
-    public PlayerLasers(double x, double y) {
+    private Color color;
+    public PlayerLasers(double x, double y, Color color) {
         this.x = x;
         this.y = y + LASER_LENGTH;
-        StdDraw.setPenColor(Color.green);
+        this.color = color;
+        StdDraw.setPenColor(color);
         StdDraw.rectangle(x, y, 0.001, LASER_LENGTH);
         StdDraw.setPenColor(Color.black);
     }
 
     public void move() {
         this.y += laserSpeed;
-        StdDraw.setPenColor(StdDraw.GREEN);
+        StdDraw.setPenColor(color);
         StdDraw.rectangle(x, y + LASER_LENGTH, 0.001, LASER_LENGTH);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public double getX() {

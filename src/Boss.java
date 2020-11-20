@@ -4,16 +4,14 @@ public class Boss {
     // Invader class
     private double x;
     private final double y = 0.6;
-    private final Color color = Color.LIGHT_GRAY; // Invader Color
     private final double WIDTH = 0.07;
     private final double HEIGHT = 0.055;
     private final int healthMax = 100;
     private int health = healthMax;
     private double bossSpeed = 0.02;
 
-    public Boss(double x, Color color) {
+    public Boss(double x) {
         this.x = x;
-        StdDraw.setPenColor(color);
         StdDraw.picture(x, y, "icons/mothership.png");
     }
 

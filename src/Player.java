@@ -16,7 +16,7 @@ public class Player {
     public boolean isHit(double x, double y) {
         // returns true if the passed x and y parameters are inside the Player's paddle
         boolean checkX = getX1() < x && getX2() > x;
-        boolean checkY = getY2() < x && getY1() - 0.01 > y;
+        boolean checkY = getY2() < y && getY1() - 0.01 > y;
         return checkX && checkY;
     }
 
@@ -93,8 +93,8 @@ public class Player {
         return health;
     }
 
-    public PlayerLasers shoot(double x, double y) {
-        return new PlayerLasers(x, y + 0.032);
+    public PlayerLasers shoot(double x, double y, Color color) {
+        return new PlayerLasers(x, y + 0.032, color);
     }
 
 }

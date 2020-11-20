@@ -8,7 +8,7 @@ public class Invader {
     private final String[] invaderType = {"icons/alien.png", "icons/alien2.png", "icons/alien3.png"};
     private final int invaderTypeIndex = (int) (Math.random() * 3);
     private final Color color;
-    private double invaderSpeed = -0.005;
+    private double invaderSpeed;
 
 
     public Invader(double x, double y) {
@@ -43,8 +43,10 @@ public class Invader {
         StdDraw.picture(x, y, invaderType[invaderTypeIndex]);
     }
 
-    public void setInvaderSpeed(double invaderSpeed) {
-        this.invaderSpeed = invaderSpeed;
+    public void setInvaderSpeed(int diff) {
+        if (diff == 1) invaderSpeed = -0.008;
+        else if (diff == 2) invaderSpeed = -0.013;
+        else invaderSpeed = -0.005;
     }
 
     public double getInvaderSpeed() {

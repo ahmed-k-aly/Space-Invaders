@@ -5,8 +5,8 @@ public class InvaderLasers {
     private final double x;
     private double y;
     private final double LASER_LENGTH = 0.01;
-    private Color color;
-    private double laserSpeed = -0.02;
+    private final Color color;
+    private double laserSpeed;
 
     public InvaderLasers(double x, double y, Color color) {
         this.x = x;
@@ -16,8 +16,10 @@ public class InvaderLasers {
         StdDraw.rectangle(x, y + LASER_LENGTH, 0.001, LASER_LENGTH);
     }
 
-    public void setLaserSpeed(double laserSpeed) {
-        this.laserSpeed = laserSpeed;
+    public void setLaserSpeed(int diff) {
+        if (diff == 1) laserSpeed = -0.04;
+        else if (diff == 2) laserSpeed = -0.06;
+        else laserSpeed = -0.02;
     }
 
     public double getLaserSpeed() {

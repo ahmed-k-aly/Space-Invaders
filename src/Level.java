@@ -2,16 +2,17 @@ public class Level {
     // Sets the game based on the level the player is at
     private int level;
     private int numInvaders;
-    private double invaderSpeed;
     private int numBosses;
-    private double bossSpeed;
     private Invader[] invaders;
     private Boss[] bosses;
     private int score = 0;
-    // TODO: Add difficulty factor
-    // TODO: add method to display level
+    private int difficulty;
 
     public Level() {
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     public void setBosses(Boss[] bosses) {
@@ -39,6 +40,10 @@ public class Level {
         else this.numBosses = 0;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public void setNumInvaders() {
         this.numInvaders = (2 * level) - numBosses * 5;
     }
@@ -50,23 +55,22 @@ public class Level {
     public void invaderKilled() {
         // decrements the value of numInvader by 1 when Invader killed
         numInvaders--;
-        score+=20;
+        score+=20 + 20*difficulty;
     }
 
     public void bossKilled() {
         // decrements the value of numBosses by 1 when boss killed
         numBosses--;
-        score+=100;
+        score+=100 + 100*difficulty;
     }
 
     public int getScore() {
         return score;
     }
 
-    public boolean levelComplete(Player player) {
-        return ((numBosses == 0 && numInvaders == 0));
+    public boolean levelComplete() {
+        return ((numBosses == 0 && numInvaders >=0));
     }
-
 
     public int getLevel() {
         return level;

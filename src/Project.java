@@ -2,7 +2,8 @@ import java.awt.*;
 
 public class Project {
     private static final Player PLAYER = new Player();
-    private static final Level levelData = new Level(); // Creates the Data for the level
+    private static Level levelData = new Level(); // Creates the Data for the level
+    private static final GameData gameData = new GameData();
 
     public static void println(String str) {
         // Lazy programmer: Shortcut to print a string.
@@ -28,7 +29,7 @@ public class Project {
         Invader[] invaders = levelData.getInvaders();
         InvaderLasers[] bullet = new InvaderLasers[invaders.length];
         int counter = 0;
-        if (Math.random() > 0.96) { // Chance to shoot any bullet to give a grace period
+        if (Math.random() > 0.97 - 0.015* gameData.getDifficulty()) { // Chance to shoot any bullet to give a grace period
             for (int i = 0; i < invaders.length; i++) {
                 Invader invader = invaders[i];
                 if (invader.getCoordinates()[2] < 1 && invader.getCoordinates()[2] > 0) {
@@ -178,6 +179,7 @@ public class Project {
     private static void moveInvaderLasers(InvaderLasers[] bullet) {
         // Moves invaders lasers down with a speed of 0.02 pixels per frame
         for (int i = 0; i < bullet.length; i++) {
+            bullet[i].setLaserSpeed(gameData.getDifficulty());
             bullet[i].move();
         }
     }
@@ -209,15 +211,19 @@ public class Project {
     }
 
     private static void initBossesArray() {
-        // Initializes the Invaders array
+        // Initializes the Bosses array
         int numBosses = levelData.getNumBosses();
         Boss[] bosses = new Boss[numBosses];
+        double spaceBtwnBosses = 1.0/numBosses;
+        Boss fake = new Boss(-1);
+        double x = fake.getSIZE();
         for (int i = 0; i < bosses.length; i++) {
-            double width = 0.07;
-            double x = Math.random() * ((1 - width) - (width)) + width;
-            // TODO: Add a way to keep distance between bosses
-            bosses[i] = new Boss(x, Color.RED);
+            bosses[i] = new Boss(x);
+            double width = bosses[i].getSIZE();
+            x+=spaceBtwnBosses;
         }
+
+
         levelData.setBosses(bosses);
     }
 
@@ -225,6 +231,7 @@ public class Project {
         // Moves the invaders.
         Invader[] invaders = levelData.getInvaders();
         for (int i = 0; i < invaders.length; i++) {
+            invaders[i].setInvaderSpeed(gameData.getDifficulty());
             invaders[i].move();
         }
     }
@@ -255,22 +262,15 @@ public class Project {
         }
     }
 
-    private static PlayerLasers[] playerShoots(Time stopwatch) {
+    private static PlayerLasers[] playerShoots(Time stopwatch, int dt) {
         stopwatch.stopStopwatch();
-        if (stopwatch.timePassed() > 360) {
+        if (stopwatch.timePassed() > dt) {
             PlayerLasers[] bullet = new PlayerLasers[1];
-            bullet[0] = PLAYER.shoot(PLAYER.getCentreX(), PLAYER.getY1());
+            bullet[0] = PLAYER.shoot(PLAYER.getCentreX(), PLAYER.getY1(), gameData.getLaserColor());
             stopwatch.startStopwatch();
             return bullet;
         }
         return new PlayerLasers[0];
-    }
-
-    private static void checkArgs(int n) {
-        if (n > 3 || n < 1) {
-            System.err.println("Wrong difficulty setting.\n" + "Difficulty can only be 1, 2, or 3");
-            System.exit(0);
-        }
     }
 
     private static PlayerLasers[] checkPlayerLasersHit(PlayerLasers[] playerLasers) {
@@ -299,7 +299,6 @@ public class Project {
             for (int bullet = 0; bullet < playerLasers.length; bullet++) {
                 if (bosses[boss].isHit(playerLasers[bullet].getX(), playerLasers[bullet].getY1())) {
                     bosses[boss].loseHealth(-10);
-                    if (bosses[boss].isDead()) levelData.bossKilled();
                     hitBulletIndex1 = bullet;
                     counter2++;
                 }
@@ -351,9 +350,8 @@ public class Project {
     }
 
     private static void levelCompletedCheck() {
-        if (levelData.levelComplete(PLAYER)) {
+        if (levelData.levelComplete()) {
             // Changes level if level complete
-            // TODO: Make level change animation
             levelData.setLevel(levelData.getLevel() + 1);
             initLevel();
             PLAYER.boostHealth(10);
@@ -361,10 +359,10 @@ public class Project {
     }
 
     private static Boss[] remove(Boss[] arr, int index) {
+        // removes passed index from the array then returns it
         if (index < 0 || index >= arr.length) {
             return arr;
         }
-
         Boss[] newArr = new Boss[arr.length - 1];
         for (int i = 0; i < index; i++) { // Copies all elements before the index
             newArr[i] = arr[i];
@@ -382,9 +380,73 @@ public class Project {
         Boss[] bosses = levelData.getBosses();
         Boss[] bosses1 = levelData.getBosses();
         for (int i = 0; i < bosses.length; i++) {
-            if (bosses[i].isDead()) bosses1 = remove(bosses, i);
+            if (bosses[i].isDead()) {
+                bosses1 = remove(bosses, i);
+                levelData.bossKilled();
+            }
         }
         levelData.setBosses(bosses1);
+    }
+
+    public static void colorButtons(){
+        StdDraw.pause(60);
+        while (true){
+            double x =0.5;
+            double y = .03 ;
+            double mas = 0.2;
+
+            Buttons red = new Buttons(x,mas + y, "Red");
+            Buttons blue = new Buttons( x, mas+ 3*y, "Blue");
+            Buttons green = new Buttons(x,mas + 5*y, "Green");
+            Buttons yellow = new Buttons(x, mas + 7*y, "Yellow");
+            Buttons black = new Buttons(x,mas + 9*y, "Black");
+            Buttons white = new Buttons(x,mas + 11*y, "White");
+            Buttons cyan = new Buttons(x, mas + 13*y, "Cyan");
+            Buttons pink = new Buttons(x, mas + 15*y, "Pink");
+            Buttons magenta = new Buttons(x, mas + 17*y, "Magenta");
+            if (red.isButtonPressed()){
+                gameData.setLaserColor(Color.red);
+                StdDraw.pause(60);
+                break;
+            }
+            else if (blue.isButtonPressed()){
+                gameData.setLaserColor(Color.blue);
+                StdDraw.pause(60);
+                break;
+            }else if (green.isButtonPressed()){
+                gameData.setLaserColor(Color.green);
+                StdDraw.pause(60);
+                break;
+            }else if (yellow.isButtonPressed()){
+                gameData.setLaserColor(Color.yellow);
+                StdDraw.pause(60);
+                break;
+            }else if (white.isButtonPressed()){
+                gameData.setLaserColor(Color.white);
+                StdDraw.pause(60);
+                break;
+            }else if (black.isButtonPressed()){
+                gameData.setLaserColor(Color.black);
+                StdDraw.pause(60);
+                break;
+            }
+            else if (cyan.isButtonPressed()){
+                gameData.setLaserColor(Color.cyan);
+                StdDraw.pause(60);
+                break;
+            }
+            else if (pink.isButtonPressed()){
+                gameData.setLaserColor(Color.pink);
+                StdDraw.pause(60);
+                break;
+            }
+            else if (magenta.isButtonPressed()){
+                gameData.setLaserColor(Color.magenta);
+                StdDraw.pause(60);
+                break;
+            }
+            updateScreen(10);
+        }
     }
 
 
@@ -415,45 +477,125 @@ public class Project {
         StdDraw.text(0.5,0.3,"Press ESC to exit");
     }
 
-    public static void prompt(int hs){
-        boolean keepGoing = true;
-        while (keepGoing){
+    public static int prompt(int hs){
+        if (hs < levelData.getScore()) hs = levelData.getScore();
+        StdDraw.text(0.5,0.6,"HighScore: " + hs);
+        while (true){
             if (StdDraw.isKeyPressed(10)) { // press enter
-                println("Zebyy");
-                PLAYER.setHealth(100);
-                keepGoing = false;
-                game(hs);
+                resetEverything();
+                return hs;
             }
             else if (StdDraw.isKeyPressed(27)) System.exit(0); // esc pressed
         }
     }
 
+    public static void resetEverything(){
+        PLAYER.setHealth(100);
+        levelData = new Level();
+    }
+
+
     public static void main(String[] args) {
-        int difficultyIndex = Integer.parseInt(args[0]);
-        checkArgs(difficultyIndex);
+        mainMenu();
         game(0);
     }
 
+    public static void chooseDifficulty(){
+        StdDraw.pause(60);
+        while (true){
+            Buttons easy = new Buttons(0.5, 0.6,"Easy");
+            Buttons normal = new Buttons(0.5, 0.6 - easy.buttonHeight*2,"Normal");
+            StdDraw.setPenColor(Color.WHITE);
+            Buttons hard = new Buttons(0.5, 0.6 - easy.buttonHeight*4,"Invading Russia in winter");
+            if (easy.isButtonPressed()){
+                gameData.setDifficulty(0);
+                break;
+            }
+            else if (normal.isButtonPressed()){
+                gameData.setDifficulty(1);
+                break;
+            }
+            else if (hard.isButtonPressed()){
+                gameData.setDifficulty(2);
+                break;
+            }
+            updateScreen(20);
+        }
+    }
+
     public static void mainMenu(){
-        /* TODO: Create a main menu before the game
-               Make a settings button where you can change sensitivity and buttons
-               Toggle cheats
-               Change player appearance
-               Change Laser Color
-               Make WW2 Mode?
-               */
+        // Creates a main Menu before the game.
+        // Controls Difficulty.
+        // Exits game or Starts game.
+
+        StdDraw.clear(Color.BLACK);
+        StdDraw.enableDoubleBuffering();
+        while (true) {
+            Buttons playGame = new Buttons(0.5, 0.5, "Play Game");
+            double buttonHeight = playGame.buttonHeight;
+            Buttons difficulty = new Buttons(0.5,0.5-buttonHeight*2, "Difficulty");
+            Buttons laserColor = new Buttons(0.5,0.5-buttonHeight*4, "Laser Color");
+            Buttons exit = new Buttons(0.5,0.5-buttonHeight*6,"Exit");
+            if (playGame.isButtonPressed()) {
+                StdDraw.disableDoubleBuffering();
+                return;
+            }
+            else if (exit.isButtonPressed()){
+                System.exit(0);
+            }
+            else if (difficulty.isButtonPressed()){
+                chooseDifficulty();
+            }
+            else if (laserColor.isButtonPressed()){
+                colorButtons();
+            }
+            updateScreen(10);
+        }
     }
 
 
-    public static void startMenu(){
-        /* TODO: Create the main menu with buttons
+    public static void startMenu(int highscore){
+        /* Create a start menu with buttons
                  Allow to exit game
                  Allow to toggle cheats
                  Allow to restart game
         */
+        while (true) {
+            String onOff;
+            if (gameData.isGodMode()){
+                onOff = "on";
+            }
+            else { onOff = "off";
+            }
+            Buttons godMode = new Buttons(0.5, 0.5, "godMode: " + onOff);
+            Buttons resume = new Buttons(0.5, 0.5 + godMode.buttonHeight * 4, "Resume");
+            Buttons laserColor = new Buttons(0.5, 0.5 + godMode.buttonHeight*2, "Laser Color");
+            Buttons restart = new Buttons(0.5, 0.5 - godMode.buttonHeight * 2, "Restart Game");
+            Buttons exit = new Buttons(0.5, 0.5 - godMode.buttonHeight * 4, "Exit");
+
+            if (exit.isButtonPressed()) {
+                System.exit(0);
+            } else if (resume.isButtonPressed()) {
+                break;
+            } else if (restart.isButtonPressed()) {
+                game(highscore);
+            } else if (godMode.isButtonPressed() && gameData.isGodMode()){
+                gameData.deToggleGodMode();
+                break;
+            }
+            else if (godMode.isButtonPressed()){
+                gameData.toggleGodMode();
+                break;
+            }
+            else if (laserColor.isButtonPressed()){
+                colorButtons();
+            }
+            updateScreen(10);
+        }
     }
 
     public static void game(int highScore){
+        levelData.setDifficulty(gameData.getDifficulty());
         levelData.setLevel(15);
         initLevel();
         StdDraw.enableDoubleBuffering();
@@ -463,17 +605,22 @@ public class Project {
         int timePerFrame = 10;
         Time stopwatch = new Time();
         stopwatch.startStopwatch();
+        int coolDownAfterPlayerShoots = 50;
         while (true) {
-            if (StdDraw.isKeyPressed(27)){
-                startMenu();
+            if (gameData.isGodMode()){
+                PLAYER.setHealth(100);
             }
 
+            if (StdDraw.isKeyPressed(27)){
+                startMenu(highScore);
+                println(levelData.getNumBosses());
+            }
             PLAYER.moveTo(StdDraw.mouseX()); // Moves the player's paddle to x-coordinate of the mouse
             moveInvaders();
             PlayerLasers[] newPlayerLasers = new PlayerLasers[0]; // inits player lasers arr
             if (StdDraw.isKeyPressed(32) || StdDraw.isMousePressed())// Shoot if Spacebar pressed or Mouse pressed. Also cooldowns
             {
-                newPlayerLasers = playerShoots(stopwatch);
+                newPlayerLasers = playerShoots(stopwatch, coolDownAfterPlayerShoots);
             }
             if (levelData.isBossLevel()) {
                 checkBossLasersHit(bossLasers);
@@ -493,16 +640,16 @@ public class Project {
             displayLevel();
             displayScore();
             if (PLAYER.isDead()){
+                // Terminates game if player died
                 break;
             }
             levelCompletedCheck();
             updateScreen(timePerFrame);
         }
         gameOver();
-        prompt(highScore);
-
+        highScore = prompt(highScore); // Base Condition
+        game(highScore); // infinite recursive call
     }
-
 
 
     private static void updateScreen(int t) {
