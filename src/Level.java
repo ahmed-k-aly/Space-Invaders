@@ -69,7 +69,7 @@ public class Level {
     }
 
     public boolean levelComplete() {
-        return ((numBosses == 0 && numInvaders >=0));
+        return ((numBosses == 0 && numInvaders == 0));
     }
 
     public int getLevel() {

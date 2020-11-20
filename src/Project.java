@@ -1,28 +1,12 @@
 import java.awt.*;
 
 public class Project {
+     /*This objects were declared static due to their need to be accessed by literally all methods
+     However they're all final except fot levelData which is altered only when restarting the game, so
+     technically they are all final as to prevent sly bugs from entering.*/
     private static final Player PLAYER = new Player();
     private static Level levelData = new Level(); // Creates the Data for the level
     private static final GameData gameData = new GameData();
-
-    public static void println(String str) {
-        // Lazy programmer: Shortcut to print a string.
-        System.out.println(str);
-    }
-
-    private static void println(Boolean str) {
-        System.out.println(str);
-    }
-
-    private static void println(int str) {
-        // Lazy programmer: Shortcut to print an str.
-        System.out.println(str);
-    }
-
-    private static void println(double str) {
-        // Lazy programmer: Shortcut to print an int.
-        System.out.println(str);
-    }
 
     private static InvaderLasers[] invaderShoot() { // Pass an array of all invaders
         // Shoots Enemy bullet and then returns an array of the recently shot bullets
@@ -350,8 +334,9 @@ public class Project {
     }
 
     private static void levelCompletedCheck() {
+        // Checks if level is complete
+        // Changes level if level complete
         if (levelData.levelComplete()) {
-            // Changes level if level complete
             levelData.setLevel(levelData.getLevel() + 1);
             initLevel();
             PLAYER.boostHealth(10);
@@ -451,6 +436,7 @@ public class Project {
 
 
     public static void initLevel() {
+        // Initializes the level
         levelData.setNumInvaders();
         levelData.setNumBosses();
         initInvadersArray(); // Initializes invaders array in Level class
@@ -458,26 +444,31 @@ public class Project {
     }
 
     public static void displayLevel(){
+        // Displays current Level
         StdDraw.setPenColor(Color.WHITE);
         StdDraw.text(0.07, 0.02, "Level: " + levelData.getLevel());
     }
 
     public static void displayScore(){
+        // Displays Current score
         StdDraw.setPenColor(Color.WHITE);
         StdDraw.text(0.6, 0.02, "Score: " + levelData.getScore());
     }
 
     public static void gameOver(){
+        // Prints message after death
         StdDraw.disableDoubleBuffering();
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.filledSquare(0.5,0.5,0.5);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.text(0.5,0.5,"GAME OVER");
-        StdDraw.text(0.5,0.4,"Press Enter to play again ");
-        StdDraw.text(0.5,0.3,"Press ESC to exit");
+        StdDraw.text(0.5,0.46,"Press Enter to play again ");
+        StdDraw.text(0.5,0.42,"Press ESC to exit");
     }
 
     public static int prompt(int hs){
+        // Prompts player to play again or end game
+        // if player plays again, resets everything and breaks
         if (hs < levelData.getScore()) hs = levelData.getScore();
         StdDraw.text(0.5,0.6,"HighScore: " + hs);
         while (true){
@@ -490,6 +481,8 @@ public class Project {
     }
 
     public static void resetEverything(){
+        // Sets player health back to 100
+        // Changes level object
         PLAYER.setHealth(100);
         levelData = new Level();
     }
@@ -500,7 +493,8 @@ public class Project {
         game(0);
     }
 
-    public static void chooseDifficulty(){
+    public static void difficultyMenu(){
+        // Creates menu to choose difficulty
         StdDraw.pause(60);
         while (true){
             Buttons easy = new Buttons(0.5, 0.6,"Easy");
@@ -527,7 +521,6 @@ public class Project {
         // Creates a main Menu before the game.
         // Controls Difficulty.
         // Exits game or Starts game.
-
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
         while (true) {
@@ -544,7 +537,7 @@ public class Project {
                 System.exit(0);
             }
             else if (difficulty.isButtonPressed()){
-                chooseDifficulty();
+                difficultyMenu();
             }
             else if (laserColor.isButtonPressed()){
                 colorButtons();
@@ -595,8 +588,9 @@ public class Project {
     }
 
     public static void game(int highScore){
+        // The magic happens here "u"
         levelData.setDifficulty(gameData.getDifficulty());
-        levelData.setLevel(15);
+        levelData.setLevel(1);
         initLevel();
         StdDraw.enableDoubleBuffering();
         PlayerLasers[] playerLasers = new PlayerLasers[0];
@@ -605,30 +599,32 @@ public class Project {
         int timePerFrame = 10;
         Time stopwatch = new Time();
         stopwatch.startStopwatch();
-        int coolDownAfterPlayerShoots = 50;
+        int coolDownAfterPlayerShoots = 360; // time in milli seconds between each player bullet
         while (true) {
             if (gameData.isGodMode()){
+                // If player toggles god mode, refills health each frame
                 PLAYER.setHealth(100);
             }
 
             if (StdDraw.isKeyPressed(27)){
+                // Opens start meu if esc is pressed
                 startMenu(highScore);
-                println(levelData.getNumBosses());
             }
             PLAYER.moveTo(StdDraw.mouseX()); // Moves the player's paddle to x-coordinate of the mouse
             moveInvaders();
             PlayerLasers[] newPlayerLasers = new PlayerLasers[0]; // inits player lasers arr
-            if (StdDraw.isKeyPressed(32) || StdDraw.isMousePressed())// Shoot if Spacebar pressed or Mouse pressed. Also cooldowns
-            {
+            if (StdDraw.isKeyPressed(32) || StdDraw.isMousePressed()){
+                // Shoot if Spacebar pressed or Mouse pressed. Also cooldowns
                 newPlayerLasers = playerShoots(stopwatch, coolDownAfterPlayerShoots);
             }
             if (levelData.isBossLevel()) {
+                // Handles boss Syestems in boss level
                 checkBossLasersHit(bossLasers);
                 moveBosses();
                 BossLasers[] bossLasers1 = bossShoot();
                 bossLasers = bossLasersArrayMerger(bossLasers, bossLasers1);
                 moveBossLasers(bossLasers);
-            } // inits boss level
+            }
             InvaderLasers[] newInvaderLasers = invaderShoot();
             playerLasers = playerLasersArrayMerger(playerLasers, newPlayerLasers);
             invaderLasers = invaderLasersArrayMerger(invaderLasers, newInvaderLasers);
