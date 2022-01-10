@@ -504,7 +504,7 @@ public class Project {
             Buttons easy = new Buttons(0.5, 0.6,"Easy");
             Buttons normal = new Buttons(0.5, 0.6 - easy.buttonHeight*2,"Normal");
             StdDraw.setPenColor(Color.WHITE);
-            Buttons hard = new Buttons(0.5, 0.6 - easy.buttonHeight*4,"Invading Russia in winter");
+            Buttons hard = new Buttons(0.5, 0.6 - easy.buttonHeight*4,"Hard");
             if (easy.isButtonPressed()){
                 gameData.setDifficulty(0);
                 break;
