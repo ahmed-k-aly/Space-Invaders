@@ -4,7 +4,7 @@ Space Invaders game created using StdDraw for my Intro to Computer Science I fin
 The Game rules are pretty straightforward: shoot the bad aliens while evading their lasers. The number of aliens
 increase by each round. There is a boss level each 5 rounds, which also gets progressively harder each time
 it occurs. Player dies only if their health is dropped to zero. Normal invader dies if player's laser touches it.
-Boss invader dies only if their health is dropped to zero. A score is computed after each kill.
+Boss invader dies only if their health is dropped to zero. A score is computed after each kill. 
 
 ### Features:
 Main Menu:   Allows user to start game, choose difficulty, alter laser color, and exit game.
@@ -18,6 +18,7 @@ For opening menu: Escape button.
 ## Future Improvements
 The codebase can be greatly helped and reduced by implementing Inheritance and Polymorphism.
 # Game:
+Game is run through the src/Project.java file
 
 ![MainMenu](src/Screenshots/MainMenu.png)
 
