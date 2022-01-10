@@ -16,7 +16,7 @@ For shooting: Space Bar, any button on mouse.
 For opening menu: Escape button.
 
 ## Future Improvements
-The codebase can be greatly helped by implementing Inheritance and Polymorphism.
+The codebase can be greatly helped and reduced by implementing Inheritance and Polymorphism.
 # Game:
 
 ![MainMenu](src/Screenshots/MainMenu.png)
