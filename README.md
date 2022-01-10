@@ -1,5 +1,5 @@
 # Space-Invaders
-Space Invaders game created using StdDraw as my Intro to Computer Science I final project during Fall 2020
+Space Invaders game created using StdDraw for my Intro to Computer Science I final project during Fall 2020
 ## Description:
 The Game rules are pretty straightforward: shoot the bad aliens while evading their lasers. The number of aliens
 increase by each round. There is a boss level each 5 rounds, which also gets progressively harder each time
