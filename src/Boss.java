@@ -1,7 +1,13 @@
+
+/*
+@author Ahmed Aly
+@date: 2020-11-16
+This class is used to design the boss and handle the boss's logic 
+*/
+
 import java.awt.*;
 
 public class Boss {
-    // Invader class
     private double x;
     private final double y = 0.6;
     private final double WIDTH = 0.07;
@@ -32,6 +38,7 @@ public class Boss {
     }
 
     private void createHealthBar() {
+        /* create boss health bar */
         double ratio = WIDTH / (double) healthMax;
         StdDraw.setPenColor(Color.green);
         StdDraw.filledRectangle(x, y + 0.05, WIDTH, 0.006);
@@ -41,10 +48,12 @@ public class Boss {
     }
 
     public int getHealth() {
+        /* get the health of the boss */
         return health;
     }
 
     public double getSIZE() {
+        /* get the size of the boss figure */
         return WIDTH;
     }
 
@@ -61,6 +70,7 @@ public class Boss {
     }
 
     public void move() {
+        /* move the boss*/
         this.x += bossSpeed;
         reverseDirectionCheck();
         StdDraw.picture(x, y, "icons/mothership.png");
@@ -68,6 +78,7 @@ public class Boss {
     }
 
     public double getBossSpeed() {
+        /* returns the boss speed*/
         return bossSpeed;
     }
 

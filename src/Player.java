@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class is responsible for the player's logic and data.
+*/
 import java.awt.*;
 
 public class Player {

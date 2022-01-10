@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class handles the logic of the space invader and its design
+*/
 import java.awt.*;
 
 public class Invader {

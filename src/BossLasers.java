@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class handles the logic of the boss's lasers
+*/
 import java.awt.*;
 
 public class BossLasers {

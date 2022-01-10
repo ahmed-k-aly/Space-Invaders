@@ -1,3 +1,10 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class generates and holds the data for each level.
+It generates the number of bosses and the number of invaders according to difficulty. 
+*/
+
 public class Level {
     // Sets the game based on the level the player is at
     private int level;

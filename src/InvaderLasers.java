@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class handles the logic of the invader's laser
+*/
 import java.awt.*;
 
 public class InvaderLasers {

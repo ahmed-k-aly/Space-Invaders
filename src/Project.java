@@ -1,9 +1,13 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This is the main class that the game starts from.
+*/
 import java.awt.*;
 
+
 public class Project {
-     /*This objects were declared static due to their need to be accessed by literally all methods
-     However they're all final except fot levelData which is altered only when restarting the game, so
-     technically they are all final as to prevent sly bugs from entering.*/
+
     private static final Player PLAYER = new Player();
     private static Level levelData = new Level(); // Creates the Data for the level
     private static final GameData gameData = new GameData();
@@ -489,8 +493,8 @@ public class Project {
 
 
     public static void main(String[] args) {
-        mainMenu();
-        game(0);
+        mainMenu(); // initiate main menu
+        game(0); // start the game
     }
 
     public static void difficultyMenu(){
@@ -588,17 +592,17 @@ public class Project {
     }
 
     public static void game(int highScore){
-        // The magic happens here "u"
-        levelData.setDifficulty(gameData.getDifficulty());
-        levelData.setLevel(1);
-        initLevel();
-        StdDraw.enableDoubleBuffering();
+        // method responsible for running the game logic
+        levelData.setDifficulty(gameData.getDifficulty()); // set game difficulty
+        levelData.setLevel(1); // set starting level
+        initLevel(); // initializes level
+        StdDraw.enableDoubleBuffering(); // enables double buffering
         PlayerLasers[] playerLasers = new PlayerLasers[0];
         InvaderLasers[] invaderLasers = new InvaderLasers[0];
         BossLasers[] bossLasers = new BossLasers[0];
-        int timePerFrame = 10;
-        Time stopwatch = new Time();
-        stopwatch.startStopwatch();
+        int timePerFrame = 10; // sets frame time
+        Time stopwatch = new Time(); // initialize a time object
+        stopwatch.startStopwatch(); // start stopwatch
         int coolDownAfterPlayerShoots = 360; // time in milli seconds between each player bullet
         while (true) {
             if (gameData.isGodMode()){
@@ -618,29 +622,29 @@ public class Project {
                 newPlayerLasers = playerShoots(stopwatch, coolDownAfterPlayerShoots);
             }
             if (levelData.isBossLevel()) {
-                // Handles boss Syestems in boss level
-                checkBossLasersHit(bossLasers);
-                moveBosses();
-                BossLasers[] bossLasers1 = bossShoot();
-                bossLasers = bossLasersArrayMerger(bossLasers, bossLasers1);
-                moveBossLasers(bossLasers);
+                // Handles boss systems in boss level
+                checkBossLasersHit(bossLasers); // checks if the boss's lasers hit the player
+                moveBosses(); // moves the boss
+                BossLasers[] bossLasers1 = bossShoot(); // handles the boss's weapon systems
+                bossLasers = bossLasersArrayMerger(bossLasers, bossLasers1); // helper method that merges arrays
+                moveBossLasers(bossLasers); // moves the bossLasers
             }
-            InvaderLasers[] newInvaderLasers = invaderShoot();
-            playerLasers = playerLasersArrayMerger(playerLasers, newPlayerLasers);
-            invaderLasers = invaderLasersArrayMerger(invaderLasers, newInvaderLasers);
-            moveInvaderLasers(invaderLasers);
-            checkInvadersLasersHit(invaderLasers);
-            movePlayerLasers(playerLasers);
-            playerLasers = checkPlayerLasersHit(playerLasers);
-            removeBoss();
-            displayLevel();
-            displayScore();
+            InvaderLasers[] newInvaderLasers = invaderShoot(); // makes the minion shoot
+            playerLasers = playerLasersArrayMerger(playerLasers, newPlayerLasers); // helper method that merges arrays
+            invaderLasers = invaderLasersArrayMerger(invaderLasers, newInvaderLasers); // helper method that merges arrays
+            moveInvaderLasers(invaderLasers); // moves the lasers of the invaders
+            checkInvadersLasersHit(invaderLasers); // checks if the invaders lasers hit
+            movePlayerLasers(playerLasers); // moves the player lasers
+            playerLasers = checkPlayerLasersHit(playerLasers); // moves the player lasers 
+            removeBoss(); // removes the boss if not boss level
+            displayLevel(); // displays level on screen
+            displayScore(); // displays score on screen
             if (PLAYER.isDead()){
                 // Terminates game if player died
                 break;
             }
-            levelCompletedCheck();
-            updateScreen(timePerFrame);
+            levelCompletedCheck(); // checks if level is complete
+            updateScreen(timePerFrame); // updates the screen (handles the stdDraw logic)
         }
         gameOver();
         highScore = prompt(highScore); // Base Condition
@@ -652,7 +656,7 @@ public class Project {
         // Updates the screen each t milliseconds
         StdDraw.show();
         StdDraw.pause(t);
-        StdDraw.clear();
+        StdDraw.clear(Color.GRAY);
         StdDraw.picture(0.5, 0.5, "icons/bg.png", 1, 1);
     }
 }

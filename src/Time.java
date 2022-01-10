@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+Time class used for having a cooldown period for the bullets
+*/
 public class Time {
 
     private long start;

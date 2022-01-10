@@ -1,3 +1,8 @@
+/* 
+@author Ahmed Aly
+@date 2020-11-16
+This class stores the data of the game
+*/
 import java.awt.*;
 
 public class GameData {
